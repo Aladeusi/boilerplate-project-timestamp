@@ -13,6 +13,16 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
+//parse request body
+const fs = require("fs");
+const path = require("path");
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: "false" }));
+app.use(bodyParser.json());
+
+//increase request timeout globally
+const TIMEOUT = 10000;
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
@@ -24,6 +34,34 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/timestamp", function(req, res){
+  try{
+    //get current timestamp object
+    const serializedTimestamp= new Date();
+    //console.log(new Date().getTime());
+    res.status(200).json({unix:serializedTimestamp.getTime(), utc:serializedTimestamp.toUTCString()})
+  }catch(e){
+    res.status(500).json({code:500, msg:"Some error ocurred. Please try again later.", data:e})
+  }
+  
+})
+
+app.get("/api/timestamp/:date", function(req, res){
+  try{
+    //pass date param from request scope
+    let date= req.params.date;
+    console.log(typeof date)
+    //convert millisecs to secs if number
+    date = (!date.includes('-'))?Number(date): date;
+    //covert to timestamp object
+    const serializedTimestamp= new Date(date);
+    //console.log(serializedTimestamp);
+    res.status(200).json({unix:serializedTimestamp.getTime(), utc:serializedTimestamp.toUTCString()})
+  }catch(e){
+    res.status(500).json({code:500, msg:"Some error ocurred. Please try again later.", data:e})
+  }
+  
+})
 
 
 // listen for requests :)
