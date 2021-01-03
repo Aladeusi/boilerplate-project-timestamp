@@ -37,9 +37,9 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/timestamp", function(req, res){
   try{
     //get current timestamp object
-    const serializedTimestamp= new Date();
+    //const serializedTimestamp= new Date();
     //console.log(new Date().getTime());
-    res.status(200).json({unix:serializedTimestamp.getTime(), utc:serializedTimestamp.toUTCString()})
+    res.status(200).json({unix:Date().now, utc:Date()})
   }catch(e){
     res.status(500).json({code:500, msg:"Some error ocurred. Please try again later.", data:e})
   }
@@ -56,7 +56,7 @@ app.get("/api/timestamp/:date_string", function(req, res){
     //covert to timestamp object
     const serializedTimestamp= new Date(date);
     //console.log(serializedTimestamp);
-    toReturn= (serializedTimestamp.toString()=="Invalid Date")?{error:"Invalid Date"}:{unix:serializedTimestamp.getTime(), utc:serializedTimestamp.toUTCString()}
+    toReturn= (serializedTimestamp.toString()=="Invalid Date")?{error:"Invalid Date"}:{unix:serializedTimestamp.valueOf(), utc:serializedTimestamp.toUTCString()}
     res.status(200).json(toReturn)
   }catch(e){
     res.status(500).json({code:500, msg:"Some error ocurred. Please try again later.", data:e})
