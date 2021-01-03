@@ -49,10 +49,11 @@ app.get("/api/timestamp", function(req, res){
 app.get("/api/timestamp/:date_string", function(req, res){
   try{
     //pass date param from request scope
-    let date= req.params.date_string;
+    const dateString= req.params.date_string;
     //console.log(typeof date)
     //convert millisecs to secs if number
-    date = (!date.includes('-'))?Number(date): date;
+    
+    let date = (/\d{5,}/.test(dateString))?parseInt(dateString): dateString;
     //covert to timestamp object
     const serializedTimestamp= new Date(date);
     //console.log(serializedTimestamp);
